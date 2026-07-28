@@ -90,7 +90,7 @@
     },
     {
       "parameters": {
-        "chatId": "YOUR_API_KEY",
+        "chatId": "YOUR_CHAT_ ID",
         "text": "=У {{ $json.login }} {{ $json.public_repos }} репозиториев",
         "additionalFields": {}
       },
