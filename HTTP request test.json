@@ -1,0 +1,175 @@
+{
+  "name": "HTTP request test 2",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "3f89efc5-2011-4a54-a3eb-fc0972dfc455",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "url": "https://api.github.com/users/torvalds",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        208,
+        0
+      ],
+      "id": "e1e2efee-d32b-4f6e-b493-f605aba1c073",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "99e3f2a1-2710-4c36-9bdb-77c52001fe02",
+              "name": "login",
+              "value": "={{ $json.login }}",
+              "type": "string"
+            },
+            {
+              "id": "04ec91be-6af4-4ef7-8f3c-701432d7210b",
+              "name": "public_repos",
+              "value": "={{ $json.public_repos }}",
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        416,
+        0
+      ],
+      "id": "53a71447-ac27-43d7-af3a-0c1121a2b964",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "ef123b8d-f745-4458-9548-7d21102db928",
+              "leftValue": "={{ $json.public_repos }}",
+              "rightValue": 10,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        624,
+        0
+      ],
+      "id": "399e703b-b6cf-400a-b72c-3115169f8606",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "chatId": "YOUR_API_KEY",
+        "text": "=У {{ $json.login }} {{ $json.public_repos }} репозиториев",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        832,
+        -96
+      ],
+      "id": "cc58a736-a547-4690-b71a-d41426f47323",
+      "name": "Send a text message",
+      "webhookId": "74a50199-c4c2-42c6-9157-383243747bbb",
+      "credentials": {
+        "telegramApi": {
+          "id": "znaa8DPG6ctHD4UC",
+          "name": "Telegram maria_n8n_testbot"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "c2a25008-fe58-4750-8f49-ed5e00d0df9a",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "d129a579aa0f60c22e4614cea9613a6001613b0475aeda3b5a7ffe8778fc387e"
+  },
+  "nodeGroups": [],
+  "id": "tblWeSVdrwkoWkhI",
+  "tags": []
+}
