@@ -1,0 +1,162 @@
+{
+  "name": "Брони - календарь",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "4f838f3e-f5b0-47af-b398-edccb7ac77ca",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "YOUR_SPREADSHEET_ID",
+          "mode": "list",
+          "cachedResultName": "Бронь - прототип (Responses)",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/YOUR_SPREADSHEET_ID/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1258569258,
+          "mode": "list",
+          "cachedResultName": "Брони",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/YOUR_SPREADSHEET_ID/edit#gid=1258569258"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        224,
+        0
+      ],
+      "id": "17d5ff98-ba90-445b-9155-2965ccbe5c52",
+      "name": "Get row(s) in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "4uO3K2WwmJEZyWuz",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "bea0a610-9164-4f0c-b0a6-bcb6511d2429",
+              "leftValue": "={{ $json['Статус'] }}",
+              "rightValue": "Отмена брони",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.3,
+      "position": [
+        448,
+        0
+      ],
+      "id": "fa5fc155-0ce4-4599-a748-9ec558507065",
+      "name": "Filter"
+    },
+    {
+      "parameters": {
+        "calendar": {
+          "__rl": true,
+          "value": "YOUR_CALENDAR_ID",
+          "mode": "list",
+          "cachedResultName": "Брони - тест"
+        },
+        "start": "={{ DateTime.fromFormat($json[\"Дата заезда\"], \"dd.MM.yyyy\").toISODate() }}",
+        "end": "=  {{ DateTime.fromFormat($json[\"Дата выезда\"], \"dd.MM.yyyy\").toISODate() }}",
+        "additionalFields": {
+          "allday": "yes",
+          "summary": "={{ $('Get row(s) in sheet').item.json['Имя клиента'] }} - {{ $('Get row(s) in sheet').item.json['Объект'] }} ({{ $('Get row(s) in sheet').item.json['Собственник'] }})"
+        }
+      },
+      "type": "n8n-nodes-base.googleCalendar",
+      "typeVersion": 1.3,
+      "position": [
+        672,
+        0
+      ],
+      "id": "1c00a607-bda1-4898-bccc-4f442d3bea3c",
+      "name": "Create an event",
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "uE0XYLGhYPjIf7B1",
+          "name": "Google Calendar account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "Filter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter": {
+      "main": [
+        [
+          {
+            "node": "Create an event",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "18fa90c8-8ea2-4748-8e1d-43152d56573f",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "acdb8efb55511eb9eda368bcf8eb55ebc4bf8cf4409f0a4fb8639fe588a4d81b"
+  },
+  "nodeGroups": [],
+  "id": "uGaY97t8AvLxDEKG",
+  "tags": []
+}
