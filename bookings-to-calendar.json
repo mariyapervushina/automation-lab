@@ -106,7 +106,7 @@
       "type": "n8n-nodes-base.googleCalendar",
       "typeVersion": 1.3,
       "position": [
-        1120,
+        1344,
         0
       ],
       "id": "1c00a607-bda1-4898-bccc-4f442d3bea3c",
@@ -138,7 +138,7 @@
       "type": "n8n-nodes-base.googleCalendar",
       "typeVersion": 1.3,
       "position": [
-        1168,
+        1392,
         144
       ],
       "id": "adf5b513-013a-4a09-8a65-591275fc55d4",
@@ -188,6 +188,42 @@
               "id": "ecf2dcce-6676-4763-8fc1-9cbe685c4dc1",
               "name": "checkout_title",
               "value": "=Выезд: {{ $('Брони').item.json['Имя клиента'] }} - {{ $('Брони').item.json['Объект'] }} ({{ $('Брони').item.json['Собственник'] }}){{ $json['Время выезда'] ? '' : ' (время не уточнено)' }}",
+              "type": "string"
+            },
+            {
+              "id": "8f87b164-6b49-4267-b57a-1a6f99ee94df",
+              "name": "arrival_start",
+              "value": "={{ $json['Прилет: дата'] ? DateTime.fromFormat($json['Прилет: дата'] + ' ' + ($json['Прилет: время'] || '12:00'), 'dd.MM.yyyy H:mm').toISO() : '' }}",
+              "type": "string"
+            },
+            {
+              "id": "67534242-d0d1-4516-9ec2-bc52564a546f",
+              "name": "arrival_end",
+              "value": "={{ $json['Прилет: дата'] ? DateTime.fromFormat($json['Прилет: дата'] + ' ' + ($json['Прилет: время'] || '12:00'), 'dd.MM.yyyy H:mm').plus({ hours: 1 }).toISO() : '' }}",
+              "type": "string"
+            },
+            {
+              "id": "08a66ade-2740-4578-b323-10076efabe43",
+              "name": "arrival_title",
+              "value": "=Трансфер прилёт: {{ $json['Имя клиента'] }} - {{ $json['Объект'] }}{{ $json['Прилет: рейс'] ? ' · рейс ' + $json['Прилет: рейс'] : '' }}{{ $json['Прилет: аэропорт'] ? ' · ' + $json['Прилет: аэропорт'] : '' }}{{ $json['Прилет: время'] ? '' : ' (время не уточнено)' }}",
+              "type": "string"
+            },
+            {
+              "id": "d7bbb6c0-54e8-4fc6-ba9d-f20ac9076654",
+              "name": "departure_start",
+              "value": "={{ $json['Вылет: дата'] ? DateTime.fromFormat($json['Вылет: дата'] + ' ' + ($json['Вылет: время'] || '12:00'), 'dd.MM.yyyy H:mm').toISO() : '' }}",
+              "type": "string"
+            },
+            {
+              "id": "82cb1143-f5b8-4eeb-9e8c-f46bdb3a6356",
+              "name": "departure_end",
+              "value": "={{ $json['Вылет: дата'] ? DateTime.fromFormat($json['Вылет: дата'] + ' ' + ($json['Вылет: время'] || '12:00'), 'dd.MM.yyyy H:mm').plus({ hours: 1 }).toISO() : '' }}",
+              "type": "string"
+            },
+            {
+              "id": "3ae4a388-8f9f-4ccd-b5e6-ddbf8d9c0e31",
+              "name": "departure_title",
+              "value": "=Трансфер прилёт: {{ $json['Имя клиента'] }} - {{ $json['Объект'] }}{{ $json['Вылет: рейс'] ? ' · рейс ' + $json['Вылет: рейс'] : '' }}{{ $json['Вылет: аэропорт'] ? ' · ' + $json['Вылет: аэропорт'] : '' }}{{ $json['Вылет: время'] ? '' : ' (время не уточнено)' }}",
               "type": "string"
             }
           ]
@@ -266,7 +302,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.3,
       "position": [
-        896,
+        1120,
         0
       ],
       "id": "8bac0341-ef59-46a1-af71-1ebb9611fe64",
@@ -290,7 +326,7 @@
       "type": "n8n-nodes-base.googleCalendar",
       "typeVersion": 1.3,
       "position": [
-        912,
+        1136,
         176
       ],
       "id": "23f984bc-a6d5-448b-941b-7e8554cb8715",
@@ -871,7 +907,7 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.7,
       "position": [
-        1072,
+        1296,
         304
       ],
       "id": "3dfb61cb-c82a-4f65-8520-4ede41d67e9e",
@@ -1419,7 +1455,7 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.7,
       "position": [
-        1344,
+        1568,
         0
       ],
       "id": "befa3a05-76f2-4aed-88ad-d5fc58d7c789",
@@ -1430,6 +1466,1574 @@
           "name": "Google Sheets account"
         }
       }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "a1bbb59f-9249-4a84-852c-881554febf6c",
+              "leftValue": "={{ $json.arrival_start }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.3,
+      "position": [
+        864,
+        -112
+      ],
+      "id": "74ac785b-43d4-4eee-942f-56eeeda8da42",
+      "name": "Есть прилет"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "45ca96b3-cba5-4b8a-9685-02a05da5b9f6",
+              "leftValue": "={{ $json['ID: прилёт'] }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "empty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        992,
+        -320
+      ],
+      "id": "e6f990e4-ea2d-4046-b357-c39f05de26f8",
+      "name": "If прилет"
+    },
+    {
+      "parameters": {
+        "calendar": {
+          "__rl": true,
+          "value": "YOUR_CALENDAR_ID@group.calendar.google.com",
+          "mode": "list",
+          "cachedResultName": "Брони - тест"
+        },
+        "start": "={{ $json.arrival_start }}",
+        "end": "={{ $json.arrival_end }}",
+        "additionalFields": {
+          "allday": "no",
+          "summary": "={{ $json.arrival_title }}"
+        }
+      },
+      "type": "n8n-nodes-base.googleCalendar",
+      "typeVersion": 1.3,
+      "position": [
+        1424,
+        -352
+      ],
+      "id": "c5465618-956f-4d0a-a36a-ef9cf6452be5",
+      "name": "Прилет: создать",
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "uE0XYLGhYPjIf7B1",
+          "name": "Google Calendar account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "calendar": {
+          "__rl": true,
+          "value": "YOUR_CALENDAR_ID@group.calendar.google.com",
+          "mode": "list",
+          "cachedResultName": "Брони - тест"
+        },
+        "eventId": "={{ $json['ID: прилёт'] }}",
+        "updateFields": {
+          "allday": "no",
+          "end": "={{ $json.arrival_end }}",
+          "start": "={{ $json.arrival_start }}",
+          "summary": "={{ $json.arrival_title }}"
+        }
+      },
+      "type": "n8n-nodes-base.googleCalendar",
+      "typeVersion": 1.3,
+      "position": [
+        1136,
+        -192
+      ],
+      "id": "5ad5b58c-87c0-4bab-94bd-aa31bf5bb0ef",
+      "name": "Прилет: обновить",
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "uE0XYLGhYPjIf7B1",
+          "name": "Google Calendar account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "YOUR_SPREADSHEET_ID",
+          "mode": "list",
+          "cachedResultName": "Бронь - прототип (Responses)",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/YOUR_SPREADSHEET_ID/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1258569258,
+          "mode": "list",
+          "cachedResultName": "Брони",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/YOUR_SPREADSHEET_ID/edit#gid=1258569258"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "row_number": "={{ $('Брони').item.json.row_number }}",
+            "ID: прилёт": "={{ $json.id }}"
+          },
+          "matchingColumns": [
+            "row_number"
+          ],
+          "schema": [
+            {
+              "id": "Имя клиента",
+              "displayName": "Имя клиента",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Номер телефона",
+              "displayName": "Номер телефона",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Кол-во гостей",
+              "displayName": "Кол-во гостей",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Дата заезда",
+              "displayName": "Дата заезда",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Дата выезда",
+              "displayName": "Дата выезда",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Время заезда",
+              "displayName": "Время заезда",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Время выезда",
+              "displayName": "Время выезда",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Кол-во ночей",
+              "displayName": "Кол-во ночей",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Собственник",
+              "displayName": "Собственник",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Объект",
+              "displayName": "Объект",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Объект Серкана",
+              "displayName": "Объект Серкана",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Объект Ани Мемед",
+              "displayName": "Объект Ани Мемед",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Объекты Метина",
+              "displayName": "Объекты Метина",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Объект Ани Ичмелер",
+              "displayName": "Объект Ани Ичмелер",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Объект Мемо",
+              "displayName": "Объект Мемо",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Другой объект",
+              "displayName": "Другой объект",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Статус",
+              "displayName": "Статус",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Сумма",
+              "displayName": "Сумма",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Валюта",
+              "displayName": "Валюта",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Комиссия",
+              "displayName": "Комиссия",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Получено",
+              "displayName": "Получено",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Возврат",
+              "displayName": "Возврат",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Валюта комиссии",
+              "displayName": "Валюта комиссии",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Доход по отмене",
+              "displayName": "Доход по отмене",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Засчитано броней",
+              "displayName": "Засчитано броней",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Комиссия засчитанная",
+              "displayName": "Комиссия засчитанная",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Ночей засчитано",
+              "displayName": "Ночей засчитано",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Трансфер",
+              "displayName": "Трансфер",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Сумма трансфера",
+              "displayName": "Сумма трансфера",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Комиссия трансфера",
+              "displayName": "Комиссия трансфера",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Валюта трансфера",
+              "displayName": "Валюта трансфера",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Прилет: дата",
+              "displayName": "Прилет: дата",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Прилет: время",
+              "displayName": "Прилет: время",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Прилет: рейс",
+              "displayName": "Прилет: рейс",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Прилет: аэропорт",
+              "displayName": "Прилет: аэропорт",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Вылет: дата",
+              "displayName": "Вылет: дата",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Вылет: время",
+              "displayName": "Вылет: время",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Вылет: рейс",
+              "displayName": "Вылет: рейс",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Вылет: аэропорт",
+              "displayName": "Вылет: аэропорт",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Допы",
+              "displayName": "Допы",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Сумма допов",
+              "displayName": "Сумма допов",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Комиссия допов",
+              "displayName": "Комиссия допов",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Валюта допов",
+              "displayName": "Валюта допов",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Комментарии",
+              "displayName": "Комментарии",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Отметка времени",
+              "displayName": "Отметка времени",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "ID: заезд",
+              "displayName": "ID: заезд",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "ID: выезд",
+              "displayName": "ID: выезд",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "ID: прилёт",
+              "displayName": "ID: прилёт",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "ID: вылет",
+              "displayName": "ID: вылет",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1584,
+        -224
+      ],
+      "id": "d65c6591-196b-4066-a94a-6eebb7ad8c48",
+      "name": "Записать ID в таблицу прилет",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "4uO3K2WwmJEZyWuz",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "4de8ddf0-c618-4ea2-929b-f508f80c6f3f",
+              "leftValue": "={{ $json.departure_start }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.3,
+      "position": [
+        416,
+        256
+      ],
+      "id": "8cff044c-8a1e-46cf-a402-9ab1e244c590",
+      "name": "Есть вылет"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "45ca96b3-cba5-4b8a-9685-02a05da5b9f6",
+              "leftValue": "={{ $json['ID: вылет'] }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "empty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        448,
+        576
+      ],
+      "id": "988d7f17-8198-4a1e-982d-79e26e17e6c6",
+      "name": "If вылет"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "calendar": {
+          "__rl": true,
+          "value": "YOUR_CALENDAR_ID@group.calendar.google.com",
+          "mode": "list",
+          "cachedResultName": "Брони - тест"
+        },
+        "eventId": "={{ $json['ID: вылет'] }}",
+        "updateFields": {
+          "allday": "no",
+          "end": "={{ $json.departure_end }}",
+          "start": "={{ $json.departure_start }}",
+          "summary": "={{ $json.departure_title }}"
+        }
+      },
+      "type": "n8n-nodes-base.googleCalendar",
+      "typeVersion": 1.3,
+      "position": [
+        592,
+        704
+      ],
+      "id": "be7664d4-b7a7-4d7d-99af-3cda4a614614",
+      "name": "Вылет: обновить",
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "uE0XYLGhYPjIf7B1",
+          "name": "Google Calendar account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "calendar": {
+          "__rl": true,
+          "value": "YOUR_CALENDAR_ID@group.calendar.google.com",
+          "mode": "list",
+          "cachedResultName": "Брони - тест"
+        },
+        "start": "={{ $json.departure_start }}",
+        "end": "={{ $json.departure_end }}",
+        "additionalFields": {
+          "allday": "no",
+          "summary": "={{ $json.departure_title }}"
+        }
+      },
+      "type": "n8n-nodes-base.googleCalendar",
+      "typeVersion": 1.3,
+      "position": [
+        880,
+        544
+      ],
+      "id": "3521de82-9fbe-4f26-974e-21e17630a37d",
+      "name": "Вылет: создать",
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "uE0XYLGhYPjIf7B1",
+          "name": "Google Calendar account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "YOUR_SPREADSHEET_ID",
+          "mode": "list",
+          "cachedResultName": "Бронь - прототип (Responses)",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/YOUR_SPREADSHEET_ID/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1258569258,
+          "mode": "list",
+          "cachedResultName": "Брони",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/YOUR_SPREADSHEET_ID/edit#gid=1258569258"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "row_number": "={{ $('Брони').item.json.row_number }}",
+            "ID: вылет": "={{ $json.id }}"
+          },
+          "matchingColumns": [
+            "row_number"
+          ],
+          "schema": [
+            {
+              "id": "Имя клиента",
+              "displayName": "Имя клиента",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Номер телефона",
+              "displayName": "Номер телефона",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Кол-во гостей",
+              "displayName": "Кол-во гостей",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Дата заезда",
+              "displayName": "Дата заезда",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Дата выезда",
+              "displayName": "Дата выезда",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Время заезда",
+              "displayName": "Время заезда",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Время выезда",
+              "displayName": "Время выезда",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Кол-во ночей",
+              "displayName": "Кол-во ночей",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Собственник",
+              "displayName": "Собственник",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Объект",
+              "displayName": "Объект",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Объект Серкана",
+              "displayName": "Объект Серкана",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Объект Ани Мемед",
+              "displayName": "Объект Ани Мемед",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Объекты Метина",
+              "displayName": "Объекты Метина",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Объект Ани Ичмелер",
+              "displayName": "Объект Ани Ичмелер",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Объект Мемо",
+              "displayName": "Объект Мемо",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Другой объект",
+              "displayName": "Другой объект",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Статус",
+              "displayName": "Статус",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Сумма",
+              "displayName": "Сумма",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Валюта",
+              "displayName": "Валюта",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Комиссия",
+              "displayName": "Комиссия",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Получено",
+              "displayName": "Получено",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Возврат",
+              "displayName": "Возврат",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Валюта комиссии",
+              "displayName": "Валюта комиссии",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Доход по отмене",
+              "displayName": "Доход по отмене",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Засчитано броней",
+              "displayName": "Засчитано броней",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Комиссия засчитанная",
+              "displayName": "Комиссия засчитанная",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Ночей засчитано",
+              "displayName": "Ночей засчитано",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Трансфер",
+              "displayName": "Трансфер",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Сумма трансфера",
+              "displayName": "Сумма трансфера",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Комиссия трансфера",
+              "displayName": "Комиссия трансфера",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Валюта трансфера",
+              "displayName": "Валюта трансфера",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Прилет: дата",
+              "displayName": "Прилет: дата",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Прилет: время",
+              "displayName": "Прилет: время",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Прилет: рейс",
+              "displayName": "Прилет: рейс",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Прилет: аэропорт",
+              "displayName": "Прилет: аэропорт",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Вылет: дата",
+              "displayName": "Вылет: дата",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Вылет: время",
+              "displayName": "Вылет: время",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Вылет: рейс",
+              "displayName": "Вылет: рейс",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Вылет: аэропорт",
+              "displayName": "Вылет: аэропорт",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Допы",
+              "displayName": "Допы",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Сумма допов",
+              "displayName": "Сумма допов",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Комиссия допов",
+              "displayName": "Комиссия допов",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Валюта допов",
+              "displayName": "Валюта допов",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Комментарии",
+              "displayName": "Комментарии",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Отметка времени",
+              "displayName": "Отметка времени",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "ID: заезд",
+              "displayName": "ID: заезд",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "ID: выезд",
+              "displayName": "ID: выезд",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "ID: прилёт",
+              "displayName": "ID: прилёт",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "ID: вылет",
+              "displayName": "ID: вылет",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1040,
+        672
+      ],
+      "id": "4a6114cf-df61-472d-8a34-0da341b44951",
+      "name": "Записать ID в таблицу вылет",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "4uO3K2WwmJEZyWuz",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "delete",
+        "calendar": {
+          "__rl": true,
+          "value": "YOUR_CALENDAR_ID@group.calendar.google.com",
+          "mode": "list",
+          "cachedResultName": "Брони - тест"
+        },
+        "eventId": "={{ $('Отменённые').item.json['ID: заезд'] }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleCalendar",
+      "typeVersion": 1.3,
+      "position": [
+        16,
+        448
+      ],
+      "id": "353e8d61-3a93-47d8-b72c-343c095c045b",
+      "name": "Удалить заезд",
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "uE0XYLGhYPjIf7B1",
+          "name": "Google Calendar account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "operation": "delete",
+        "calendar": {
+          "__rl": true,
+          "value": "YOUR_CALENDAR_ID@group.calendar.google.com",
+          "mode": "list",
+          "cachedResultName": "Брони - тест"
+        },
+        "eventId": "={{ $('Отменённые').item.json['ID: выезд'] }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleCalendar",
+      "typeVersion": 1.3,
+      "position": [
+        192,
+        352
+      ],
+      "id": "ddae7c54-4d15-414c-be45-573692df07f8",
+      "name": "Удалить выезд",
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "uE0XYLGhYPjIf7B1",
+          "name": "Google Calendar account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "operation": "delete",
+        "calendar": {
+          "__rl": true,
+          "value": "YOUR_CALENDAR_ID@group.calendar.google.com",
+          "mode": "list",
+          "cachedResultName": "Брони - тест"
+        },
+        "eventId": "={{ $('Отменённые').item.json['ID: прилёт'] }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleCalendar",
+      "typeVersion": 1.3,
+      "position": [
+        128,
+        592
+      ],
+      "id": "fa343f8d-a601-47af-9544-d314c9059f57",
+      "name": "Удалить прилет",
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "uE0XYLGhYPjIf7B1",
+          "name": "Google Calendar account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "operation": "delete",
+        "calendar": {
+          "__rl": true,
+          "value": "YOUR_CALENDAR_ID@group.calendar.google.com",
+          "mode": "list",
+          "cachedResultName": "Брони - тест"
+        },
+        "eventId": "={{ $('Отменённые').item.json['ID: вылет'] }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleCalendar",
+      "typeVersion": 1.3,
+      "position": [
+        256,
+        736
+      ],
+      "id": "1d76e393-1eed-4ba1-920f-48b8fc65ce57",
+      "name": "Удалить вылет",
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "uE0XYLGhYPjIf7B1",
+          "name": "Google Calendar account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "2d77934d-ee26-4a8f-b7ca-857d15eca094",
+              "leftValue": "={{ $json['Статус'] }}",
+              "rightValue": "Отмена брони",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            },
+            {
+              "id": "038f5de8-a320-4ba5-83e1-a11d4a5654b3",
+              "leftValue": "={{ $json['ID: заезд'] || $json['ID: выезд'] || $json['ID: прилёт'] || $json['ID: вылет'] }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.3,
+      "position": [
+        0,
+        224
+      ],
+      "id": "99331fe7-0753-41bc-84b0-1da7fff64ac3",
+      "name": "Отменённые"
+    },
+    {
+      "parameters": {
+        "operation": "clear",
+        "documentId": {
+          "__rl": true,
+          "value": "YOUR_SPREADSHEET_ID",
+          "mode": "list",
+          "cachedResultName": "Бронь - прототип (Responses)",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/YOUR_SPREADSHEET_ID/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1258569258,
+          "mode": "list",
+          "cachedResultName": "Брони",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/YOUR_SPREADSHEET_ID/edit#gid=1258569258"
+        },
+        "clear": "specificRange",
+        "range": "=   Брони!AT{{ $('Отменённые').item.json.row_number }}:AW{{ $('Отменённые').item.json.row_number }}"
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        400,
+        880
+      ],
+      "id": "28268b4b-1a79-4134-84ac-ce4907b462bc",
+      "name": "Записать ID в таблицу вылет1",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "4uO3K2WwmJEZyWuz",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes",
+              "minutesInterval": 15
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        32,
+        -160
+      ],
+      "id": "a643c198-7486-4142-aa81-3f83f569c5b3",
+      "name": "Schedule Trigger"
     }
   ],
   "pinData": {},
@@ -1463,6 +3067,11 @@
             "node": "Filter",
             "type": "main",
             "index": 0
+          },
+          {
+            "node": "Отменённые",
+            "type": "main",
+            "index": 0
           }
         ]
       ]
@@ -1488,6 +3097,16 @@
           },
           {
             "node": "If выезд",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Есть прилет",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Есть вылет",
             "type": "main",
             "index": 0
           }
@@ -1540,15 +3159,166 @@
           }
         ]
       ]
+    },
+    "Есть прилет": {
+      "main": [
+        [
+          {
+            "node": "If прилет",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If прилет": {
+      "main": [
+        [
+          {
+            "node": "Прилет: создать",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Прилет: обновить",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Прилет: создать": {
+      "main": [
+        [
+          {
+            "node": "Записать ID в таблицу прилет",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Есть вылет": {
+      "main": [
+        [
+          {
+            "node": "If вылет",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If вылет": {
+      "main": [
+        [
+          {
+            "node": "Вылет: создать",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Вылет: обновить",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Вылет: создать": {
+      "main": [
+        [
+          {
+            "node": "Записать ID в таблицу вылет",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Удалить заезд": {
+      "main": [
+        [
+          {
+            "node": "Удалить выезд",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Удалить выезд": {
+      "main": [
+        [
+          {
+            "node": "Удалить прилет",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Удалить прилет": {
+      "main": [
+        [
+          {
+            "node": "Удалить вылет",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Отменённые": {
+      "main": [
+        [
+          {
+            "node": "Удалить заезд",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Удалить вылет": {
+      "main": [
+        [
+          {
+            "node": "Записать ID в таблицу вылет1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Брони",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Брони",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
-  "active": false,
+  "active": true,
   "settings": {
     "executionOrder": "v1",
     "binaryMode": "separate",
     "availableInMCP": false
   },
-  "versionId": "70aca1a1-6abd-48d2-8815-da1b8e378f42",
+  "versionId": "300cc471-10e4-448c-8140-ed4b3e09d5a4",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "acdb8efb55511eb9eda368bcf8eb55ebc4bf8cf4409f0a4fb8639fe588a4d81b"
